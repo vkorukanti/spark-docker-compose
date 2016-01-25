@@ -73,17 +73,16 @@ ENV PATH $PATH:${HADOOP_HOME}/sbin/:${HADOOP_HOME}/bin:${SPARK_HOME}/sbin/:${SPA
 
 RUN ssh-keygen -f /root/.ssh/id_rsa -t rsa -N ''
 
-COPY scripts /usr/bin/.
+# Spark ports
+EXPOSE 7077 6066 8080 8081
 
-# Spark master port for job submission
-EXPOSE 7077 
-# Spark master REST interface port for job submission
-EXPOSE 6066
-# Spark master web port
-EXPOSE 8080
-# Spark worker web port
-EXPOSE 8081
-# HDFS Namenode web port
-EXPOSE 50070 
+# Hdfs ports
+EXPOSE 50010 50020 50070 50075 50090 8020 9000
+# Mapred ports
+EXPOSE 19888
+#Yarn ports
+EXPOSE 8030 8031 8032 8033 8040 8042 8088
+#Other ports
+EXPOSE 49707 2122
 
 ENTRYPOINT ["/usr/bin/bootstrap.sh"]
