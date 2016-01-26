@@ -9,12 +9,8 @@ RUN \
   apt-get install -y build-essential && \
   apt-get install -y software-properties-common && \
   apt-get install -y byobu curl git htop man unzip vim wget && \
+  apt-get install -y openssh-server sshpass && \
   rm -rf /var/lib/apt/lists/*
-
-# Install SSH server
-RUN \
-  apt-get update && \
-  apt-get install -y openssh-server sshpass
 
 RUN mkdir /var/run/sshd
 RUN echo 'root:screencast' | chpasswd
@@ -85,4 +81,3 @@ EXPOSE 8030 8031 8032 8033 8040 8042 8088
 #Other ports
 EXPOSE 49707 2122
 
-ENTRYPOINT ["/usr/bin/bootstrap.sh"]
