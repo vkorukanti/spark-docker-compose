@@ -1,0 +1,34 @@
+# Container that runs following services
+#  - HDFS NameNode and DataNode,
+#  - Spark Master and Worker
+spark-master:
+ image: spark-master
+ hostname: spark-master-host
+ ports:
+   # Spark master WebUI port
+   - "8080:8080"
+   # Spark master job submission port
+   - "7077:7077"
+   # HDFS port
+   - "9000:9000"
+   # HDFS NameNode WebUI
+   - "50070:50070"
+ # Adjust according to the resources available on host machine
+ cpu_shares: 3000
+ mem_limit: 5g
+
+# Container that runs the following services
+#  - HDFS DataNode,
+#  - Spark Worker
+spark-slave:
+ image: spark-slave
+ hostname: spark-slave-host
+ links:
+   - spark-master
+ environment:
+   # Hostname must be the hostname of the container that has the Spark master service runnning.
+   - MASTER_HOSTNAME=spark-master-host
+ # Adjust according to the resources available on host machine
+ cpu_shares: 3000
+ mem_limit: 4g
+
