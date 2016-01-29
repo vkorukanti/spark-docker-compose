@@ -1,34 +1,59 @@
-# Container that runs following services
-#  - HDFS NameNode and DataNode,
-#  - Spark Master and Worker
-spark-master:
- image: spark-master
- hostname: spark-master-host
+# Container that runs HDFS NameNode and DataNode services
+hdfs-namenode:
+ image: hdfs-namenode
+ hostname: hdfs-namenode-host
  ports:
-   # Spark master WebUI port
-   - "8080:8080"
-   # Spark master job submission port
-   - "7077:7077"
    # HDFS port
    - "9000:9000"
    # HDFS NameNode WebUI
    - "50070:50070"
  # Adjust according to the resources available on host machine
  cpu_shares: 3000
- mem_limit: 5g
+ mem_limit: 2g
 
-# Container that runs the following services
-#  - HDFS DataNode,
-#  - Spark Worker
+# Container that runs HDFS DataNode service
+hdfs-datanode:
+ image: hdfs-datanode
+ hostname: hdfs-datanode-host
+ links:
+   - hdfs-namenode
+ environment:
+   # NAMENODE_HOSTNAME is the hostname of the container running Namenode service
+   - NAMENODE_HOSTNAME=hdfs-namenode-host
+ # Adjust according to the resources available on host machine
+ cpu_shares: 3000
+ mem_limit: 2g
+
+# Container that runs Spark Master and Worker services
+spark-master:
+ image: spark-master
+ hostname: spark-master-host
+ links:
+   - hdfs-namenode
+ ports:
+   # Spark master WebUI port
+   - "8080:8080"
+   # Spark master job submission port
+   - "7077:7077"
+ environment:
+   # NAMENODE_HOSTNAME is the hostname of the container running Namenode service
+   - NAMENODE_HOSTNAME=hdfs-namenode-host
+ # Adjust according to the resources available on host machine
+ cpu_shares: 3000
+ mem_limit: 2g
+
+# Container that runs Spark Worker service
 spark-slave:
  image: spark-slave
  hostname: spark-slave-host
  links:
+   - hdfs-namenode
    - spark-master
  environment:
-   # Hostname must be the hostname of the container that has the Spark master service runnning.
+   # NAMENODE_HOSTNAME is the hostname of the container running Namenode service
+   - NAMENODE_HOSTNAME=hdfs-namenode-host
+   # MASTER_HOSTNAME is the hostname of the container running Spark master service
    - MASTER_HOSTNAME=spark-master-host
  # Adjust according to the resources available on host machine
  cpu_shares: 3000
- mem_limit: 4g
-
+ mem_limit: 2g

@@ -1,10 +1,9 @@
-# spark-docker-compose
-Spark + HDFS cluster using docker compose
+# Docker compose for spawning on demand HDFS and Spark clusters
 
-# build
+# Build the required Docker images
 `./build-images.sh`
 
-# run
+# Run the cluster
 Note: Run below commands from the directory where `docker-compose.yml` file is present.
 ## bring up the cluster
 `docker-compose up -d`
@@ -14,11 +13,21 @@ Note: Run below commands from the directory where `docker-compose.yml` file is p
 `docker-compose start`
 ## remove containers
 `docker-compose rm -f`
+## to scale HDFS datanode or Spark worker containers
+`docker-compose scale spark-slave=n` where n is the new number of containers.
 
-## attaching to cluster containers
-#### master container which is running the HDFS NameNode/DataNode and Spark Master/Worker services
-`docker exec -it sparkdockercluster_spark-master_1 /bin/bash`
-
-#### slave container which is running the HDFS DataNode and Spark Worker services
-`docker exec -it sparkdockercluster_spark-slave_1 /bin/bash`
-
+## Attaching to cluster containers
+  - HDFS NameNode container
+    * Runs HDFS NameNode and DataNode services
+    * `docker exec -it sparkdockercluster_hdfs-namenode_1 /bin/bash`
+  - HDFS DataNode container(s)
+    * Runs HDFS DataNode service
+    * There could be multiple instances of this container. To connect to n'th container
+      * `docker exec -it sparkdockercluster_hdfs-datanode__n_ /bin/bash`
+  - Spark Master container
+    * Runs Spark Master and Worker services
+    * `docker exec -it sparkdockercluster_spark-master_1 /bin/bash`
+  - Spark Worker container
+    * Runs Spark Worker service
+    * There could be multiple instances of this container. To connect to n'th container
+      * `docker exec -it sparkdockercluster_spark-slave__n_ /bin/bash`
