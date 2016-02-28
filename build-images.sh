@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Script to build all required images for running HDFS and Spark clusters
 # Usage:
 # <HOME>/build-images.sh [scratch]
